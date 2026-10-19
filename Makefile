@@ -26,7 +26,8 @@ CFLAGS := --target=aarch64-none-elf -std=c17 -O3 -ffast-math -g \
 	-mbranch-protection=bti -fno-pic -fno-pie -fno-common \
 	-fno-vectorize -fno-slp-vectorize -Wall -Wextra -Werror $(INCLUDES) \
 	-DOPEN_SECURE_ROM_PLATFORM=$(PLATFORM_ID)
-ASFLAGS := --target=aarch64-none-elf -g -c $(INCLUDES)
+ASFLAGS := --target=aarch64-none-elf -g -c $(INCLUDES) \
+	$(if $(filter t8110,$(PLATFORM)),-DOPEN_SECURE_ROM_WARM_BOOT)
 LDFLAGS := -T linker.ld --no-undefined --build-id=none \
 	--fatal-warnings -nostdlib -static
 
