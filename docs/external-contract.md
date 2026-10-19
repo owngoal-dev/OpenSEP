@@ -28,7 +28,8 @@ per-platform differences in the handoff are in [platforms.md](platforms.md).
   it), the ROM clears it and jumps straight back into the runtime at
   `0x3_4000_0000`. On a cold boot it must read as anything other than `1`.
   The `vresearch1` build does not read it.
-- **DART**: addresses that arrive over the mailbox are dart-sep IOVAs. The ROM
+- **DART** (`t8110` only): addresses that arrive over the mailbox are dart-sep
+  IOVAs. The `vresearch1` build uses them as they are. The `t8110` ROM
   walks the DART itself (stream 0 at IPA `0x2_5D2C_0000`: TCR at `+0x1000`,
   TTBR at `+0x1400`, two levels of 11 index bits over 16 KiB pages). A
   bypassed or unprogrammed stream means the address is used as is.

@@ -1,5 +1,7 @@
 #include "open_secure_rom/system_closure.h"
 
+#include "open_secure_rom/boot_platform.h"
+
 #include "open_secure_rom/der.h"
 #include "open_secure_rom/event_log.h"
 #include "open_secure_rom/panic.h"
@@ -89,16 +91,19 @@ static sep_u64 sep_peek64(sep_u64 physical_address, sep_u32 attribute) {
 }
 
 sep_u64 sep_shared_region_translate(sep_u64 iova) {
-    const sep_u32 tcr =
-        sep_peek32(SEP_DART_BASE + SEP_DART_TCR + SEP_DART_STREAM * 4,
-                   SEP_ATTR_DEVICE);
-    const sep_u32 ttbr =
-        sep_peek32(SEP_DART_BASE + SEP_DART_TTBR + SEP_DART_STREAM * 4,
-                   SEP_ATTR_DEVICE);
+    sep_u32 tcr;
+    sep_u32 ttbr;
     sep_u64 table;
     sep_u64 entry = 0;
     int level;
 
+    if (!sep_boot_platform()->walks_dart) {
+        return iova;
+    }
+    tcr = sep_peek32(SEP_DART_BASE + SEP_DART_TCR + SEP_DART_STREAM * 4,
+                     SEP_ATTR_DEVICE);
+    ttbr = sep_peek32(SEP_DART_BASE + SEP_DART_TTBR + SEP_DART_STREAM * 4,
+                      SEP_ATTR_DEVICE);
     if ((tcr & SEP_DART_TCR_BYPASS) != 0) {
         return iova;
     }

@@ -89,6 +89,11 @@ them for this yet (see the end of this page).
   backs nothing at that IPA for a guest with less than about 7.5 GiB of
   memory, where the load aborts before the vector table is set and the
   framework stops the SEP core, and for a larger guest it is guest RAM.
+- **DART.** Only the `t8110` build translates mailbox addresses through
+  dart-sep's stream zero at `0x2_5D2C_0000`. The `vresearch1` build uses them
+  as they are: under Virtualization.framework that IPA is unbacked for a
+  guest with less than about 7.5 GiB of memory, where the read aborts and the
+  image copy panics mid-restore, and guest RAM for a larger one.
 - **Selection at run time.** The row is fixed when the ROM is built. Two ways
   to choose it at run time instead:
   - read the manifest's CHIP/BORD, which the ROM already evaluates;

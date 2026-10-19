@@ -48,6 +48,12 @@ typedef struct {
      * with; otherwise the runtime builds its own.
      */
     sep_bool rom_builds_translation_tables;
+    /*
+     * Addresses that arrive over the mailbox are translated through
+     * dart-sep's stream zero, read at SEP_DART_BASE (shared_region.c);
+     * otherwise they are used as they are.
+     */
+    sep_bool walks_dart;
 } sep_boot_platform_t;
 
 enum {
