@@ -20,6 +20,11 @@ static const sep_boot_platform_t boot_platforms[] = {
      * 0x18000 (0x2001D00); and builds no translation tables.  The
      * vphone600 SEPOS keeps x0, branches on it being zero, and reads the
      * magic through it (0x4008, 0x404C, 0x6328 in 23E5207q).
+     *
+     * It walks no DART.  Virtualization.framework backs nothing at the
+     * t8110 DART's address unless the guest has about 7.5 GiB of memory or
+     * more; below that the read aborts and the copy panics mid-restore, and
+     * above it the read is guest RAM.
      */
     [SEP_BOOT_PLATFORM_VRESEARCH1] = {
         .runtime_entry = 0,
@@ -28,6 +33,7 @@ static const sep_boot_platform_t boot_platforms[] = {
         .handoff_in_power_down_register = 0,
         .cold_input_offset = 0,
         .rom_builds_translation_tables = 0,
+        .walks_dart = 0,
     },
     /*
      * What the d16 SEPOS needs from the t8110 SEPROM, measured on the
@@ -66,6 +72,7 @@ static const sep_boot_platform_t boot_platforms[] = {
         .handoff_in_power_down_register = 1,
         .cold_input_offset = 0x680000ULL,
         .rom_builds_translation_tables = 1,
+        .walks_dart = 1,
     },
 };
 

@@ -53,7 +53,14 @@ sep_reset_entry:
      * image+0x20000 and returns into the thread that went down (measured on
      * the 22G100 SEP runtime).  A cold boot never has the word
      * set -- only that path writes it -- so nothing else here changes.
+     *
+     * Only t8110 has that path.  Virtualization.framework backs nothing at
+     * this IPA on vresearch1 unless the guest has about 7.5 GiB of memory or
+     * more: below that the load takes a synchronous abort before
+     * VBAR_EL1 is set and the framework ends the SEP core, and above it the
+     * word is guest RAM, which can read 1.
      */
+#if defined(OPEN_SECURE_ROM_WARM_BOOT)
     ldr x10, =SEP_BOOT_WARM_MARK
     ldr w11, [x10]
     cmp w11, #1
@@ -63,6 +70,7 @@ sep_reset_entry:
     isb
     ldr x10, =SEP_BOOT_RUNTIME_ENTRY
     br x10
+#endif
 .Lbootstrap_cold:
 
     adr x10, sep_vector_table
