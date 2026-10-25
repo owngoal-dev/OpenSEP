@@ -1,3 +1,4 @@
+#include "open_secure_rom/event_log.h"
 #include "open_secure_rom/mailbox.h"
 #include "open_secure_rom/platform.h"
 #include "open_secure_rom/protocol.h"
@@ -35,5 +36,6 @@ void __attribute__((noreturn)) sep_main_initialize(void) {
     sep_write_apibkey_el1(api_key[0], api_key[1]);
     sep_memzero(api_key, sizeof(api_key));
     sep_set_sctlr_el1_enib(1);
+    sep_protocol_event_log_append(OPEN_SECURE_ROM_EVENT_BOOT_READY);
     sep_mailbox_protocol_coordinator();
 }

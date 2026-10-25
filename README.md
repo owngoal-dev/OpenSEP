@@ -70,6 +70,8 @@ optional checks in `make verify`; see [Internals](docs/internals.md).
   come from and the planned move to host-supplied keys.
 - [Internals](docs/internals.md): the toolchain, the checks in
   `make verify` and the source layout.
+- [Event log](docs/event-log.md): boot milestones and offline decoding of
+  a paused guest's ring or panic record.
 - [Open items](docs/open-items.md): known, deferred work.
 
 ## Acknowledgements

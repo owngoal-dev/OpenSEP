@@ -1,3 +1,4 @@
+#include "open_secure_rom/event_log.h"
 #include "open_secure_rom/mailbox.h"
 #include "open_secure_rom/protocol.h"
 #include "open_secure_rom/runtime.h"
@@ -175,11 +176,14 @@ void __attribute__((noreturn)) sep_mailbox_protocol_coordinator(void) {
     sep_clear_research_seed();
     open_secure_rom_mailbox_protocol_reset();
     sep_mailbox_activate_and_wait_ready();
+    sep_protocol_event_log_append(OPEN_SECURE_ROM_EVENT_MAILBOX_READY);
     sep_mailbox_send_startup_event(1);
     if (sep_mailbox_receive_and_dispatch_requests() != 1) {
         sep_fatal_wait_loop();
     }
+    sep_protocol_event_log_append(OPEN_SECURE_ROM_EVENT_AKE_READY);
     sep_runtime_prepare_zeroed_regions(sep_mailbox_get_command11_word());
+    sep_protocol_event_log_append(OPEN_SECURE_ROM_EVENT_REGIONS_READY);
     sep_mailbox_send_startup_event(2);
     if (sep_mailbox_receive_and_dispatch_requests() != 2) {
         sep_fatal_wait_loop();
