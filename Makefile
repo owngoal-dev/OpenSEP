@@ -64,12 +64,13 @@ $(BUILD)/obj/c/%.o: src/%.c | $(BUILD)
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) -ffunction-sections -fdata-sections -c $< -o $@
 
-# Only boot_platform.c depends on PLATFORM.  The stamp is brought up to date
-# while the Makefile is read, so it is current before any target is judged.
+# boot_platform.c and boot/start.S depend on PLATFORM.  The stamp is brought
+# up to date while the Makefile is read, before any target is judged.
 $(shell mkdir -p $(BUILD) && { echo '$(PLATFORM)' | cmp -s - $(BUILD)/platform || \
 	echo '$(PLATFORM)' > $(BUILD)/platform; })
 $(BUILD)/obj/c/runtime/boot/boot_platform.o: $(BUILD)/platform
 $(BUILD)/obj/host/runtime/boot/boot_platform.o: $(BUILD)/platform
+$(BUILD)/obj/asm/runtime/boot/start.o: $(BUILD)/platform
 
 $(BUILD)/obj/asm/%.o: src/%.S | $(BUILD)
 	mkdir -p $(@D)
