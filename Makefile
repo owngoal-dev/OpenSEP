@@ -64,10 +64,15 @@ $(BUILD)/obj/c/%.o: src/%.c | $(BUILD)
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) -ffunction-sections -fdata-sections -c $< -o $@
 
-# boot_platform.c and boot/start.S depend on PLATFORM.  The stamp is brought
-# up to date while the Makefile is read, before any target is judged.
+# boot_platform.c and boot/start.S depend on PLATFORM (src:Makefile:29).
+# Invalidate their linked outputs too: Make 3.81 does not distinguish a
+# same-second stamp update (rec:worker03 session 6554, platform switch).
 $(shell mkdir -p $(BUILD) && { echo '$(PLATFORM)' | cmp -s - $(BUILD)/platform || \
-	echo '$(PLATFORM)' > $(BUILD)/platform; })
+	{ $(RM) $(BUILD)/obj/c/runtime/boot/boot_platform.o \
+		$(BUILD)/obj/host/runtime/boot/boot_platform.o \
+		$(BUILD)/obj/asm/runtime/boot/start.o \
+		$(ELF) $(ROM) $(HOST_LIBRARY) $(HOST_TESTS); \
+	  echo '$(PLATFORM)' > $(BUILD)/platform; }; })
 $(BUILD)/obj/c/runtime/boot/boot_platform.o: $(BUILD)/platform
 $(BUILD)/obj/host/runtime/boot/boot_platform.o: $(BUILD)/platform
 $(BUILD)/obj/asm/runtime/boot/start.o: $(BUILD)/platform
